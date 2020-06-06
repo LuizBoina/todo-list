@@ -1,0 +1,16 @@
+.header {
+  background-color: tomato;
+  text-align: center;
+  height: 50px;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.banner {
+  color: azure;
+  padding-top: 11px;
+}
+
+.banner h2 {
+  cursor: pointer;
+  display: contents;
+}

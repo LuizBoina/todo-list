@@ -1,0 +1,104 @@
+:root {
+  --grid: 10px;
+}
+
+.row {
+  /* overflow-x: auto; */
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  height: fit-content;
+}
+
+.row > div:first-child {
+  display: contents;
+}
+
+.lists {
+  display: flex;
+  align-items: self-end;
+  /* float: left; */
+}
+
+.list {
+  min-width: 250px;
+  /* min-height: 250px; */
+  margin: 7% 4% 4% 4%;
+  border-radius: 10% 10% 5% 5%;
+  padding: var(--grid); /* be nice also without that */
+}
+
+.new-list {
+  width: -webkit-fill-available;
+  text-align: center;
+  align-self: center;
+}
+
+.new-list button {
+  
+  background-size: 100px 82px;
+  background-color: darkorange;
+  border-radius: 100%;
+  background-repeat:no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+
+}
+
+.new-list img {
+  padding: 10px;
+}
+
+.todo-item {
+  display: flex;
+  user-select: none;
+  justify-content: space-around;
+  align-items: center;
+  padding: calc(var(--grid) * 2);
+  margin: 0 0 var(--grid) 0;
+}
+
+.todo-item button {
+  background-color: transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.todo-list-title {
+  display: flex;
+  margin-left: 20%;
+  justify-content: space-evenly;
+  /* text-align: center; */
+  /* margin-right: 8%; */
+  margin-top: 2%;
+  margin-bottom: 7%;
+}
+
+.todo-list-title button {
+  background-color: transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.new-item {
+  margin-top: 7%;
+  text-align: center;
+}
+
+.new-item button {
+  background-color: transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
