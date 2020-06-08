@@ -1,112 +1,113 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Modal from '../../components/modal/Modal';
+import api from '../../services/api';
 
 import './home.css';
 
 import PlusSvg from '../../assets/svg/plus.svg';
 import MinusSvg from '../../assets/svg/minus.svg';
 
-const fakeTodoLists = [
-  {
-    title: 'Todo-list-0',
-    id: '0',
-    items: [
-      {
-        id: '01',
-        itemName: 'list-0-name-1',
-        isDone: false
-      },
-      {
-        id: '02',
-        itemName: 'list-0-name-2',
-        isDone: true
-      },
-      {
-        id: '03',
-        itemName: 'list-0-name-3',
-        isDone: false
-      },
-      {
-        id: '04',
-        itemName: 'list-0-name-4',
-        isDone: false
-      },
-      {
-        id: '05',
-        itemName: 'list-0-name-5',
-        isDone: true
-      },
-    ]
-  },
-  {
-    title: 'Todo-list-1',
-    id: '1',
-    items: [
-      {
-        id: '11',
-        itemName: 'list-1-name-1',
-        isDone: false
-      },
-      {
-        id: '12',
-        itemName: 'list-1-name-2',
-        isDone: false
-      },
-      {
-        id: '13',
-        itemName: 'list-1-name-3',
-        isDone: true
-      },
-      {
-        id: '14',
-        itemName: 'list-1-name-4',
-        isDone: false
-      },
-      {
-        id: '15',
-        itemName: 'list-1-name-5',
-        isDone: true
-      },
-    ]
-  },
-]
+// const fakeTodoLists = [
+//   {
+//     title: 'Todo-list-0',
+//     id: '0',
+//     tasks: [
+//       {
+//         id: '01',
+//         taskName: 'list-0-name-1',
+//         isDone: false
+//       },
+//       {
+//         id: '02',
+//         taskName: 'list-0-name-2',
+//         isDone: true
+//       },
+//       {
+//         id: '03',
+//         taskName: 'list-0-name-3',
+//         isDone: false
+//       },
+//       {
+//         id: '04',
+//         taskName: 'list-0-name-4',
+//         isDone: false
+//       },
+//       {
+//         id: '05',
+//         taskName: 'list-0-name-5',
+//         isDone: true
+//       },
+//     ]
+//   },
+//   {
+//     title: 'Todo-list-1',
+//     id: '1',
+//     tasks: [
+//       {
+//         id: '11',
+//         taskName: 'list-1-name-1',
+//         isDone: false
+//       },
+//       {
+//         id: '12',
+//         taskName: 'list-1-name-2',
+//         isDone: false
+//       },
+//       {
+//         id: '13',
+//         taskName: 'list-1-name-3',
+//         isDone: true
+//       },
+//       {
+//         id: '14',
+//         taskName: 'list-1-name-4',
+//         isDone: false
+//       },
+//       {
+//         id: '15',
+//         taskName: 'list-1-name-5',
+//         isDone: true
+//       },
+//     ]
+//   },
+// ]
 
-var fakeCountId = 2;
+// var fakeCountId = 2;
 
-const newFakeTodoListTemplate = fakeCountId => (
-  {
-    title: `list-${fakeCountId}`,
-    id: `${fakeCountId.toString}`,
-    items: [
-      {
-        id: `${fakeCountId}1`,
-        itemName: `list-${fakeCountId}-name-1`,
-        isDone: false
-      },
-      {
-        id: `${fakeCountId}2`,
-        itemName: `list-${fakeCountId}-name-2`,
-        isDone: true
-      },
-      {
-        id: `${fakeCountId}3`,
-        itemName: `list-${fakeCountId}-name-3`,
-        isDone: false
-      },
-      {
-        id: `${fakeCountId}4`,
-        itemName: `list-${fakeCountId}-name-4`,
-        isDone: false
-      },
-      {
-        id: `${fakeCountId}5`,
-        itemName: `list-${fakeCountId}-name-5`,
-        isDone: true
-      },
-    ]
-  }
-)
+// const newFakeTodoListTemplate = fakeCountId => (
+//   {
+//     title: `list-${fakeCountId}`,
+//     id: `${fakeCountId.toString}`,
+//     tasks: [
+//       {
+//         id: `${fakeCountId}1`,
+//         taskName: `list-${fakeCountId}-name-1`,
+//         isDone: false
+//       },
+//       {
+//         id: `${fakeCountId}2`,
+//         taskName: `list-${fakeCountId}-name-2`,
+//         isDone: true
+//       },
+//       {
+//         id: `${fakeCountId}3`,
+//         taskName: `list-${fakeCountId}-name-3`,
+//         isDone: false
+//       },
+//       {
+//         id: `${fakeCountId}4`,
+//         taskName: `list-${fakeCountId}-name-4`,
+//         isDone: false
+//       },
+//       {
+//         id: `${fakeCountId}5`,
+//         taskName: `list-${fakeCountId}-name-5`,
+//         isDone: true
+//       },
+//     ]
+//   }
+// )
 
 const Home = () => {
 
@@ -116,34 +117,68 @@ const Home = () => {
     inputValue: '',
     modalTitle: '',
     idxList: -1,
-    idxItem: -1,
+    idxTask: -1,
   };
 
-  const [data, setData] = useState(fakeTodoLists);
+  const [data, setData] = useState([]);
   const [state, setState] = useState(initalState);
 
-  const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
+  useEffect(() => {
+    api.get('api/lists').then(res => {
+      console.log(res.data);
+      setData(res.data);
+    }).catch(err => {
+      console.log(err);
+      //setData(fakeTodoLists);
+    })
+  }, []);
+
+  const toggleIsDoneHandle = async (listIdx, taskIdx) => {
+    try {
+      const listId = data[listIdx]._id;
+      const idx = { taskIdx: taskIdx };
+      await api.put(`/api/list/${listId}/task/is_done`, idx);
+      const newData = [...data];
+      newData[listIdx].tasks[taskIdx].isDone = !newData[listIdx].tasks[taskIdx].isDone;
+      setData(newData);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const reorder = async (listIdx, startIdx, endIdx) => {
+    try {
+      const listId = data[listIdx]._id;
+      const idx = { startIndex: startIdx, endIndex: endIdx };
+      const res = await api.put(`/api/list/${listId}/task`, idx);
+      const newData = [...data];
+      newData[listIdx] = res.data;
+      setData(newData); 
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const move = (source, destination, droppableSource, droppableDestination) => {
-    const sourceClone = Array.from(source);
-    const destClone = Array.from(destination);
-    const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-    destClone.splice(droppableDestination.index, 0, removed);
-
-    const result = {};
-    result[droppableSource.droppableId] = sourceClone;
-    result[droppableDestination.droppableId] = destClone;
-
-    return result;
+  // both param are obj first field (index) is the idx of task and 
+  // second field (droppableId) is the idx of list
+  const move = async (droppableSource, droppableDestination) => {
+    try {
+      const listSourceIdx = Number(droppableSource.droppableId);
+      const listDestIdx = Number(droppableDestination.droppableId);
+      const listSourceId = data[listSourceIdx]._id;
+      const listDestId = data[listDestIdx]._id;
+      const idx = { sourceIdx:  droppableSource.index, destIdx: droppableDestination.index};
+      const res = await api.put(`/api/list/${listSourceId}/${listDestId}/task`, idx);
+      const newData = [...data];
+      newData[listSourceIdx] = res.data[0];
+      newData[listDestIdx] = res.data[1];
+      setData(newData); 
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const dataChangeHandle = (buttonType, idxList, idxItem) => {
+  const dataChangeHandle = (buttonType, idxList, idxTask) => {
     switch (buttonType) {
       case 'ADD_LIST':
         setState({
@@ -153,18 +188,18 @@ const Home = () => {
           inputValue: '',
           modalTitle: 'Add new List',
           idxList: -1,
-          idxItem: -1,
+          idxTask: -1,
         });
         break;
-      case 'ADD_ITEM':
+      case 'ADD_TASK':
         setState({
           ...state,
-          showModal: 'ADD_ITEM',
+          showModal: 'ADD_TASK',
           haveInput: true,
           inputValue: '',
           modalTitle: 'Add new Item',
           idxList: idxList,
-          idxItem: -1,
+          idxTask: -1,
         });
         break;
       case 'REMOVE_LIST':
@@ -175,18 +210,18 @@ const Home = () => {
           inputValue: '',
           modalTitle: 'Remove List',
           idxList: idxList,
-          idxItem: -1,
+          idxTask: -1,
         });
       break;
-      case 'REMOVE_ITEM':
+      case 'REMOVE_TASK':
         setState({
           ...state,
-          showModal: 'REMOVE_ITEM',
+          showModal: 'REMOVE_TASK',
           haveInput: false,
           inputValue: '',
           modalTitle: 'Remove Item',
           idxList: idxList,
-          idxItem: idxItem,
+          idxTask: idxTask,
         });
         break;
       default:
@@ -194,35 +229,51 @@ const Home = () => {
     }
   }
 
-  const onConfirmFunctionSelect = e => {
+  const onConfirmFunctionSelect = async e => {
     e.preventDefault();
     switch (state.showModal) {
       case 'ADD_LIST':
-        const newFakeList = {
+        const newList = {
           title: state.inputValue,
-          id: `${fakeCountId++}`,
-          items: [],
-        };
-        setData([...data, newFakeList]);
+          tasks: [],
+        }
+        try {
+          const res = await api.post('api/list', newList);
+          setData([...data, res.data]);
+        } catch (err) {
+          console.log(err);
+        }
         break;
-      case 'ADD_ITEM':
-        const newFakeItem = {
-          id: `${fakeCountId++}`,
-          itemName: state.inputValue,
+      case 'ADD_TASK':
+        const newTask = {
+          taskName: state.inputValue,
           isDone: false,
         };
+        const id = data[state.idxList]._id;
+        const res = await api.put(`/api/list/${id}`, newTask);
         const newData = [...data];
-        newData[state.idxList].items.push(newFakeItem);
+        newData[state.idxList] = res.data;
+        console.log('ADD_TASK', res.data);
         setData(newData);
         break;
       case 'REMOVE_LIST':
-        const _newData = [...data];
-        _newData.splice(state.idxList, 1);
-        setData(_newData);
+        try {
+          const id = data[state.idxList]._id;
+          await api.delete(`/api/list/${id}`);
+          const _newData = [...data];
+          _newData.splice(state.idxList, 1);
+          setData(_newData);
+        } catch (err) {
+          console.log(err);
+        }
       break;
-      case 'REMOVE_ITEM':
+      case 'REMOVE_TASK':
+        const id_list = data[state.idxList]._id;
+        const id_task = data[state.idxList].tasks[state.idxTask]._id;
+        const _res = await api.put(`/api/list/${id_list}/${id_task}`);
+        console.log(_res);
         const __newData = [...data];
-        __newData[state.idxList].items.splice(state.idxItem, 1);
+        __newData[state.idxList] = res.data;
         setData(__newData);
         break;
       default:
@@ -231,9 +282,8 @@ const Home = () => {
     setState(initalState);
   }
 
-  const onDragEnd = result => {
-    const { source, destination } = result;
-
+  const onDragEnd = async result => {
+    const { source, destination, draggableId } = result;
     // dropped outside the list
     if (!destination) {
       return;
@@ -242,15 +292,11 @@ const Home = () => {
     const dInd = +destination.droppableId;
 
     if (sInd === dInd) {
-      const newData = [...data];
-      newData[sInd].items = reorder(data[sInd].items, source.index, destination.index);;
-      setData(newData);
+      if (source.index === destination.index)
+        return;
+      await reorder(sInd, source.index, destination.index);
     } else {
-      const result = move(data[sInd].items, data[dInd].items, source, destination);
-      const newData = [...data];
-      newData[sInd].items = result[sInd];
-      newData[dInd].items = result[dInd];
-      setData(newData);
+      await move(source, destination);
     }
   }
 
@@ -288,11 +334,11 @@ const Home = () => {
                       <img src={MinusSvg} width='15' alt='Remove list' />
                     </button>
                   </div>
-                  {TodoList.items.map((item, idxItem) => (
+                  {TodoList.tasks.map((item, idxTask) => (
                     <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={idxItem}
+                      key={item._id}
+                      draggableId={item._id}
+                      index={idxTask}
                     >
                       {(provided, snapshot) => (
                         <div
@@ -311,18 +357,14 @@ const Home = () => {
                             <input
                               type='checkbox'
                               checked={item.isDone}
-                              onChange={() => {
-                                const newData = [...data];
-                                newData[idxList].items[idxItem].isDone = !newData[idxList].items[idxItem].isDone;
-                                setData(newData)
-                              }}  
+                              onChange={() => toggleIsDoneHandle(idxList, idxTask)}  
                             />
                             <div style={{textDecoration: item.isDone ? 'line-through' : 'none'}}>
-                            {item.itemName}
+                            {item.taskName}
                             </div>
                             <button
                               type='button'
-                              onClick={() => dataChangeHandle('REMOVE_ITEM', idxList, idxItem)}
+                              onClick={() => dataChangeHandle('REMOVE_TASK', idxList, idxTask)}
                             >
                               <img src={MinusSvg} width='10' alt='Remove item' />
                             </button>
@@ -333,7 +375,7 @@ const Home = () => {
                   <div className='new-item'>
                     <button
                       type='button'
-                      onClick={() => dataChangeHandle('ADD_ITEM', idxList)}
+                      onClick={() => dataChangeHandle('ADD_TASK', idxList)}
                     >
                       <img src={PlusSvg} width='20' alt='Add new item' />
                     </button>
